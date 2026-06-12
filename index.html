@@ -308,6 +308,33 @@ body{background:var(--navy);color:var(--white);font-family:'Inter',sans-serif;mi
   padding:2px 8px;
   color:var(--muted);
 }
+/* ── LIVE SCORE ── */
+.score-block {
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.score-line {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;
+  letter-spacing:0.08em;
+  color:var(--white);
+  line-height:1;
+}
+.score-lbl {
+  font-size:0.55rem;
+  color:var(--muted);
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+}
+/* Winner golden glow */
+.team-winner .team-flag { filter:drop-shadow(0 0 8px rgba(245,197,24,0.9)); }
+.team-winner .team-name {
+  color:var(--gold);
+  text-shadow:0 0 14px rgba(245,197,24,0.6);
+}
+.team-loser .team-name { color:var(--muted); opacity:0.6; }
+.team-loser .team-flag { filter:grayscale(0.7) opacity(0.55); }
+.match-finished { border-color:rgba(245,197,24,0.2)!important; }
+.match-live { border-color:rgba(220,30,30,0.4)!important; box-shadow:0 0 18px rgba(220,30,30,0.15); }
 .live-badge {
   font-size:0.65rem;
   font-weight:700;
@@ -319,6 +346,7 @@ body{background:var(--navy);color:var(--white);font-family:'Inter',sans-serif;mi
   padding:2px 8px;
   animation:blink 1.5s ease-in-out infinite;
 }
+
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
 .stage-mini {
   font-size:0.65rem;
@@ -675,6 +703,20 @@ const KNOCKOUT_STAGES = [
 
 const STAGES = ["All","Group Stage","Knockout Rounds"];
 
+// Convert "12:30 AM" → "00:30 AM", "12:30 PM" stays as-is (noon)
+function formatDisplayTime(t){
+  if(!t||t==="TBD") return {clock:t,period:""};
+  const isAM=t.includes("AM"), isPM=t.includes("PM");
+  const clean=t.replace(/\s*(AM|PM)/,"").trim();
+  const [hStr,mStr]=clean.split(":");
+  let h=parseInt(hStr), m=mStr||"00";
+  // midnight hour: 12:xx AM → 00:xx
+  if(isAM && h===12) h=0;
+  const hDisplay=String(h).padStart(2,"0");
+  const period=isAM?"AM":"PM";
+  return {clock:`${hDisplay}:${m}`, period:period+" IST"};
+}
+
 function timeBand(t){
   if(!t||t==="TBD") return "";
   const pm=t.includes("PM"),am=t.includes("AM");
@@ -785,20 +827,22 @@ function render(){
       <div class="cards-grid">
         ${matches.map(m=>{
           const tb=timeBand(m[1]);
-          const timeParts=m[1].replace(/(AM|PM)/," $1").trim().split(" ");
+          const {clock,period}=formatDisplayTime(m[1]);
           const isToday2=date===todayStr;
+          const matchKey=`${m[0]}_${m[2]}_${m[3]}`.replace(/\s+/g,"_");
+          const scoreId=`score_${matchKey}`;
           return `
           <div class="match-card ${isToday2?"today-card":""}">
             <div class="card-top">
               <span class="group-badge">Group ${m[4]}</span>
-              <span class="stage-mini">${m[5]}</span>
+              <span class="stage-mini" id="status_${scoreId}">${m[5]}</span>
             </div>
             <div class="teams-row">
               <div class="team">
                 <span class="team-flag">${FLAG(m[2])}</span>
                 <span class="team-name">${m[2]}</span>
               </div>
-              <div class="vs-block">
+              <div class="vs-block" id="${scoreId}">
                 <div class="vs-dot"></div>
                 <span class="vs-text">VS</span>
                 <div class="vs-dot"></div>
@@ -810,8 +854,8 @@ function render(){
             </div>
             <div class="card-bottom">
               <div class="time-display">
-                <span class="time-clock">${timeParts[0]}</span>
-                <span class="time-period">${timeParts[1]||""} IST</span>
+                <span class="time-clock">${clock}</span>
+                <span class="time-period">${period}</span>
               </div>
               ${tb?`<span class="time-band ${bandClass(tb)}">${bandLabel(tb)}</span>`:""}
             </div>
@@ -858,6 +902,181 @@ render();
 
 document.getElementById("search").addEventListener("input",render);
 document.getElementById("time-filter").addEventListener("change",render);
+
+// ── LIVE SCORES via Claude API + web_search ──
+const TEAM_MAP = {
+  "México":"Mexico","Mexico":"Mexico",
+  "Republic of Korea":"South Korea","Korea Republic":"South Korea",
+  "Bosnia-Herzegovina":"Bosnia & Herz.","Bosnia and Herzegovina":"Bosnia & Herz.",
+  "Iran":"Iran","IR Iran":"Iran","Iran (Islamic Republic of)":"Iran",
+  "Côte d'Ivoire":"Ivory Coast","Cote d'Ivoire":"Ivory Coast",
+  "United States":"USA","USA":"USA",
+  "Türkiye":"Türkiye","Turkey":"Türkiye",
+  "DR Congo":"DR Congo","Congo DR":"DR Congo","Democratic Republic of Congo":"DR Congo",
+  "Curaçao":"Curaçao","Curacao":"Curaçao",
+  "Cape Verde":"Cape Verde","Cabo Verde":"Cape Verde",
+  "New Zealand":"New Zealand","Saudi Arabia":"Saudi Arabia",
+};
+function normTeam(n){ return TEAM_MAP[n]||(n||""); }
+
+function applyScore(scoreEl, s1, s2, statusRaw){
+  const st=(statusRaw||"").toUpperCase();
+  const isLive=["1H","2H","HT","ET","PEN","LIVE","IN_PLAY","STATUS_IN_PROGRESS","HALFTIME","LIVE_EXTRA_TIME"].some(x=>st.includes(x));
+  const isFinished=["FT","AET","AP","FULL_TIME","FINAL","STATUS_FINAL","POST"].some(x=>st.includes(x));
+  if(s1===null||s1===undefined||s1===""||s2===null||s2===undefined||s2==="") return;
+
+  const n1=parseInt(s1), n2=parseInt(s2);
+  const liveLabel=isLive?(st==="HALFTIME"||st==="HT"?"HT":"LIVE"):"";
+  const ftLabel=isFinished?"FT":"";
+
+  scoreEl.innerHTML=`
+    <div class="score-block">
+      ${isLive?`<span class="live-badge">🔴 ${liveLabel}</span>`:""}
+      <span class="score-line">${s1} – ${s2}</span>
+      ${ftLabel&&!isLive?`<span class="score-lbl">${ftLabel}</span>`:""}
+    </div>`;
+
+  if(isFinished && n1!==n2){
+    const card=scoreEl.closest(".match-card");
+    if(card){
+      const teams=card.querySelectorAll(".team");
+      const winIdx=n1>n2?0:1;
+      teams[winIdx].classList.add("team-winner");
+      teams[1-winIdx].classList.add("team-loser");
+      card.classList.add("match-finished");
+    }
+  }
+  if(isLive){
+    const card=scoreEl.closest(".match-card");
+    if(card) card.classList.add("match-live");
+  }
+}
+
+function patchCards(events){
+  let patched=0;
+  events.forEach(ev=>{
+    const t1=normTeam(ev.home||""); 
+    const t2=normTeam(ev.away||"");
+    if(!t1||!t2) return;
+    document.querySelectorAll("[id^='score_']").forEach(el=>{
+      const low=el.id.toLowerCase();
+      const k1=t1.toLowerCase().replace(/[^a-z0-9]/g,"_");
+      const k2=t2.toLowerCase().replace(/[^a-z0-9]/g,"_");
+      if(low.includes(k1)&&low.includes(k2)){
+        applyScore(el,ev.s1,ev.s2,ev.status);
+        patched++;
+      }
+    });
+  });
+  return patched;
+}
+
+// ESPN public scoreboard — no auth, CORS open from browsers
+// Slug for FIFA World Cup on ESPN
+async function fromESPN(){
+  // ESPN uses different slugs; try both
+  const slugs=["fifa.world","fifa.world.2026","soccer.fifa.world"];
+  for(const slug of slugs){
+    try{
+      const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${slug}/scoreboard`,
+        {mode:"cors",cache:"no-store"});
+      if(!r.ok) continue;
+      const d=await r.json();
+      const events=d.events||[];
+      if(!events.length) continue;
+      return events.map(e=>{
+        const comp=(e.competitions||[])[0]||{};
+        const comps=comp.competitors||[];
+        const home=comps.find(c=>c.homeAway==="home")||comps[0]||{};
+        const away=comps.find(c=>c.homeAway==="away")||comps[1]||{};
+        const status=comp.status?.type?.name||comp.status?.type?.state||"";
+        return{
+          home:normTeam(home.team?.displayName||home.team?.name||""),
+          away:normTeam(away.team?.displayName||away.team?.name||""),
+          s1:home.score,s2:away.score,status
+        };
+      });
+    }catch(e){}
+  }
+  return null;
+}
+
+// Claude API with web_search — always works, fetches real scores
+async function fromClaude(){
+  const today = new Date().toLocaleDateString("en-US",{timeZone:"Asia/Kolkata",month:"short",day:"numeric",year:"numeric"});
+  const prompt = `Search for FIFA World Cup 2026 match scores today (${today} IST / current matches). 
+Return ONLY a JSON array, no markdown, no explanation. Each object must have exactly these fields:
+{"home":"Team Name","away":"Team Name","s1":0,"s2":0,"status":"FT or LIVE or HT or NS"}
+Use the exact team names from this list: Mexico, South Africa, South Korea, Czechia, Canada, Bosnia & Herz., USA, Paraguay, Qatar, Switzerland, Brazil, Morocco, Haiti, Scotland, Australia, Türkiye, Germany, Curaçao, Netherlands, Japan, Ivory Coast, Ecuador, Sweden, Tunisia, Spain, Cape Verde, Belgium, Egypt, Saudi Arabia, Uruguay, Iran, New Zealand, France, Senegal, Iraq, Norway, Argentina, Algeria, Austria, Jordan, Portugal, DR Congo, England, Croatia, Ghana, Panama, Uzbekistan, Colombia.
+Status must be: FT (finished), LIVE (in progress), HT (half time), or NS (not started yet).
+Only include matches that have started or finished. If no matches have started yet, return [].`;
+
+  const r = await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      model:"claude-sonnet-4-6",
+      max_tokens:1000,
+      tools:[{type:"web_search_20250305",name:"web_search"}],
+      messages:[{role:"user",content:prompt}]
+    })
+  });
+  if(!r.ok) throw new Error("Claude API "+r.status);
+  const d=await r.json();
+  const text=d.content.filter(b=>b.type==="text").map(b=>b.text).join("");
+  // Strip any accidental markdown fences
+  const clean=text.replace(/```json|```/g,"").trim();
+  const arr=JSON.parse(clean);
+  if(!Array.isArray(arr)) throw new Error("not array");
+  return arr.map(e=>({
+    home:normTeam(e.home||""),
+    away:normTeam(e.away||""),
+    s1:e.s1,s2:e.s2,
+    status:e.status||"NS"
+  }));
+}
+
+async function fetchLiveScores(){
+  const sources=[
+    {name:"ESPN",fn:fromESPN},
+    {name:"Claude+Search",fn:fromClaude},
+  ];
+  for(const src of sources){
+    try{
+      const events=await src.fn();
+      if(events&&events.length){
+        const n=patchCards(events);
+        setScoreStatus(`✓ ${src.name} — ${events.length} matches, ${n} updated`,"ok");
+        return;
+      } else {
+        setScoreStatus(`${src.name}: no live matches yet`,"warn");
+        if(src.name==="Claude+Search") return; // Claude said no matches started — trust it
+      }
+    }catch(e){
+      setScoreStatus(`${src.name}: ${e.message}`,"warn");
+    }
+  }
+  setScoreStatus("Score sources unavailable","err");
+}
+
+function setScoreStatus(msg,type){
+  let el=document.getElementById("score-status");
+  if(!el){
+    el=document.createElement("div");
+    el.id="score-status";
+    el.style.cssText="position:fixed;bottom:1rem;right:1rem;font-size:0.7rem;padding:6px 12px;border-radius:6px;z-index:999;font-family:monospace;max-width:320px;word-break:break-all;opacity:0.85";
+    document.body.appendChild(el);
+  }
+  el.textContent=msg;
+  el.style.background=type==="ok"?"#1a4a1a":type==="warn"?"#3a3010":"#4a1010";
+  el.style.border=type==="ok"?"1px solid #2d8a2d":type==="warn"?"1px solid #8a7020":"1px solid #8a2020";
+  el.style.color=type==="ok"?"#6eff6e":type==="warn"?"#ffdd55":"#ff7070";
+  // Auto-hide success after 10s
+  if(type==="ok") setTimeout(()=>el&&(el.style.opacity="0.3"),10000);
+}
+
+fetchLiveScores();
+setInterval(fetchLiveScores,60000);
 </script>
 </body>
 </html>
