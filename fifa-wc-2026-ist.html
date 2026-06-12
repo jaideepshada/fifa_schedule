@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FIFA World Cup 2026 — India Schedule (IST)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0A1628;
+  --navy2: #0F1E38;
+  --navy3: #162744;
+  --gold: #F5C518;
+  --gold2: #D4A90E;
+  --blue: #1A6FD4;
+  --blue2: #1259B0;
+  --white: #FFFFFF;
+  --muted: rgba(255,255,255,0.55);
+  --dim: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* ── PITCH HERO ── */
+.hero {
+  position:relative;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  padding:2rem 1rem 6rem;
+}
+.pitch-bg {
+  position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(15,120,60,0.18) 0px,
+      rgba(15,120,60,0.18) 60px,
+      rgba(10,80,40,0.18) 60px,
+      rgba(10,80,40,0.18) 120px
+    ),
+    linear-gradient(160deg, #081220 0%, #0A1628 40%, #071830 100%);
+  animation: pitchShift 8s ease-in-out infinite alternate;
+}
+@keyframes pitchShift {
+  0%{background-position:0 0}
+  100%{background-position:0 40px}
+}
+.pitch-lines {
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% 50%, rgba(255,255,255,0.025) 0%, transparent 70%);
+  pointer-events:none;
+}
+.center-circle {
+  position:absolute;
+  width:220px;height:220px;
+  border:1.5px solid rgba(255,255,255,0.07);
+  border-radius:50%;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+.center-spot {
+  position:absolute;width:6px;height:6px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.1);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.halfway-line {
+  position:absolute;
+  width:90%;height:1px;
+  background:rgba(255,255,255,0.06);
+  top:50%;left:5%;
+}
+.glow-orb {
+  position:absolute;
+  width:600px;height:600px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(245,197,24,0.06) 0%, transparent 65%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:pulseOrb 4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes pulseOrb{0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+
+.trophy-icon {
+  font-size:3rem;
+  margin-bottom:1rem;
+  filter:drop-shadow(0 0 20px rgba(245,197,24,0.5));
+  animation:floatTrophy 3s ease-in-out infinite;
+}
+@keyframes floatTrophy{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.hero-eyebrow {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1rem;
+  letter-spacing:0.3em;
+  color:var(--gold);
+  text-transform:uppercase;
+  margin-bottom:0.5rem;
+  opacity:0;animation:fadeUp 0.8s 0.2s forwards;
+}
+.hero-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.5rem,10vw,8rem);
+  line-height:0.9;
+  text-align:center;
+  letter-spacing:0.02em;
+  opacity:0;animation:fadeUp 0.8s 0.4s forwards;
+}
+.hero-title span {
+  color:var(--gold);
+  display:block;
+  text-shadow:0 0 60px rgba(245,197,24,0.4);
+}
+.hero-subtitle {
+  margin-top:1.5rem;
+  font-size:1rem;
+  color:var(--muted);
+  letter-spacing:0.05em;
+  text-align:center;
+  opacity:0;animation:fadeUp 0.8s 0.6s forwards;
+}
+.hero-stats {
+  display:flex;gap:2rem;margin-top:2.5rem;
+  opacity:0;animation:fadeUp 0.8s 0.8s forwards;
+  flex-wrap:wrap;justify-content:center;
+}
+.stat-pill {
+  text-align:center;padding:0.75rem 1.5rem;
+  border:1px solid var(--border);
+  border-radius:100px;
+  background:var(--dim);
+  backdrop-filter:blur(8px);
+}
+.stat-pill .num{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);line-height:1}
+.stat-pill .lbl{font-size:0.7rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+
+.scroll-hint {
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  opacity:0;animation:fadeUp 0.8s 1.2s forwards;
+}
+.scroll-hint span{font-size:0.65rem;color:var(--muted);letter-spacing:0.15em;text-transform:uppercase}
+.scroll-arrow{width:18px;height:18px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg);animation:bounce 1.5s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0)}50%{transform:rotate(45deg) translateY(5px)}}
+
+@keyframes fadeUp{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
+
+/* ── TICKER ── */
+.ticker-wrap {
+  position:relative;z-index:10;
+  background:var(--gold);
+  color:var(--navy);
+  padding:0.5rem 0;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.ticker-inner {
+  display:inline-flex;gap:3rem;
+  animation:ticker 40s linear infinite;
+}
+.ticker-inner:hover{animation-play-state:paused}
+.ticker-item{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.05em}
+.ticker-sep{color:var(--navy2);opacity:0.5}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── MAIN CONTENT ── */
+.main{max-width:1200px;margin:0 auto;padding:3rem 1.25rem 5rem}
+
+.section-label {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.85rem;
+  letter-spacing:0.25em;
+  color:var(--gold);
+  text-transform:uppercase;
+  margin-bottom:0.5rem;
+}
+.section-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,5vw,3.5rem);
+  line-height:1;
+  margin-bottom:2rem;
+}
+
+/* ── FILTERS ── */
+.filters {
+  display:flex;gap:0.75rem;flex-wrap:wrap;
+  margin-bottom:1.5rem;align-items:center;
+}
+.search-box {
+  flex:1;min-width:200px;max-width:280px;
+  position:relative;
+}
+.search-box input {
+  width:100%;padding:0.65rem 1rem 0.65rem 2.5rem;
+  background:var(--dim);
+  border:1px solid var(--border);
+  border-radius:100px;
+  color:var(--white);
+  font-family:'Inter',sans-serif;
+  font-size:0.875rem;
+  outline:none;
+  transition:border-color 0.2s;
+}
+.search-box input:focus{border-color:var(--gold)}
+.search-box input::placeholder{color:var(--muted)}
+.search-box svg{position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);opacity:0.4}
+
+.time-filter {
+  padding:0.65rem 1rem;
+  background:var(--dim);
+  border:1px solid var(--border);
+  border-radius:100px;
+  color:var(--white);
+  font-family:'Inter',sans-serif;
+  font-size:0.875rem;
+  outline:none;
+  cursor:pointer;
+}
+.time-filter:focus{border-color:var(--gold)}
+
+/* ── STAGE TABS ── */
+.stage-tabs {
+  display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem;
+}
+.stage-tab {
+  padding:0.45rem 1rem;
+  border:1px solid var(--border);
+  border-radius:6px;
+  background:transparent;
+  color:var(--muted);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.9rem;
+  letter-spacing:0.05em;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.stage-tab:hover{border-color:rgba(255,255,255,0.3);color:var(--white)}
+.stage-tab.active{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+
+/* ── MATCH CARDS ── */
+.date-group{margin-bottom:2.5rem}
+.date-header {
+  display:flex;align-items:center;gap:1rem;
+  margin-bottom:1rem;padding-bottom:0.5rem;
+  border-bottom:1px solid var(--border);
+}
+.date-header .date-label {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.4rem;
+  letter-spacing:0.05em;
+}
+.date-header .day-count {
+  font-size:0.7rem;
+  color:var(--muted);
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  border:1px solid var(--border);
+  border-radius:100px;
+  padding:2px 10px;
+}
+.date-header.today-hdr .date-label{color:var(--gold)}
+
+.cards-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:0.75rem;
+}
+
+.match-card {
+  background:var(--navy2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1rem 1.25rem;
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  cursor:default;
+}
+.match-card::before {
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--blue));
+  opacity:0;
+  transition:opacity 0.2s;
+}
+.match-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.2);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+.match-card:hover::before{opacity:1}
+.match-card.today-card{border-color:rgba(245,197,24,0.3);background:linear-gradient(135deg,var(--navy2),rgba(245,197,24,0.04))}
+.match-card.today-card::before{opacity:1}
+
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem}
+.group-badge {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.75rem;
+  letter-spacing:0.12em;
+  background:var(--dim);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:2px 8px;
+  color:var(--muted);
+}
+.live-badge {
+  font-size:0.65rem;
+  font-weight:700;
+  letter-spacing:0.1em;
+  background:rgba(220,30,30,0.15);
+  border:1px solid rgba(220,30,30,0.4);
+  color:#FF5252;
+  border-radius:100px;
+  padding:2px 8px;
+  animation:blink 1.5s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+.stage-mini {
+  font-size:0.65rem;
+  color:var(--muted);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+
+.teams-row {
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:0.5rem;
+  margin-bottom:0.85rem;
+}
+.team {
+  display:flex;flex-direction:column;
+  gap:4px;
+}
+.team.right{align-items:flex-end;text-align:right}
+.team-flag {
+  font-size:1.6rem;
+  line-height:1;
+}
+.team-name {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.05rem;
+  letter-spacing:0.03em;
+  line-height:1.1;
+}
+.vs-block {
+  display:flex;flex-direction:column;
+  align-items:center;gap:2px;
+}
+.vs-text {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.75rem;
+  color:var(--muted);
+  letter-spacing:0.1em;
+}
+.vs-dot{width:4px;height:4px;border-radius:50%;background:var(--border)}
+
+.card-bottom {
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:0.75rem;
+  border-top:1px solid var(--border);
+}
+.time-display {
+  display:flex;align-items:center;gap:6px;
+}
+.time-clock {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.5rem;
+  letter-spacing:0.05em;
+  line-height:1;
+}
+.time-period {
+  font-size:0.65rem;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  align-self:flex-end;
+  padding-bottom:2px;
+}
+.time-band {
+  font-size:0.65rem;
+  border-radius:100px;
+  padding:2px 8px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+.band-late{background:rgba(100,80,200,0.15);border:1px solid rgba(100,80,200,0.3);color:#B8A8F8}
+.band-early{background:rgba(26,111,212,0.12);border:1px solid rgba(26,111,212,0.3);color:#7EB8FF}
+.band-eve{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);color:var(--gold)}
+
+/* ── KNOCKOUT BRACKET HINT ── */
+.knockout-card {
+  background:var(--navy2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1.25rem 1.5rem;
+  display:flex;align-items:center;gap:1.25rem;
+  margin-bottom:0.75rem;
+}
+.ko-icon{font-size:1.8rem;flex-shrink:0}
+.ko-info .ko-stage{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.05em}
+.ko-info .ko-dates{font-size:0.8rem;color:var(--muted);margin-top:2px}
+.ko-time {
+  margin-left:auto;text-align:right;
+}
+.ko-time .ko-ist{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--gold);letter-spacing:0.05em}
+.ko-time .ko-lbl{font-size:0.65rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:3rem;
+}
+.stat-block {
+  background:var(--navy2);
+  padding:1.25rem 1.5rem;
+  text-align:center;
+}
+.stat-block .s-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--gold);line-height:1}
+.stat-block .s-lbl{font-size:0.7rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:4px}
+
+/* ── TODAY SECTION ── */
+.today-banner {
+  background:linear-gradient(135deg,rgba(245,197,24,0.08),rgba(26,111,212,0.08));
+  border:1px solid rgba(245,197,24,0.2);
+  border-radius:12px;
+  padding:1.25rem 1.5rem;
+  margin-bottom:2.5rem;
+  display:flex;align-items:center;gap:1rem;
+  flex-wrap:wrap;
+}
+.today-banner .tb-icon{font-size:2rem}
+.today-banner .tb-text h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.05em;color:var(--gold)}
+.today-banner .tb-text p{font-size:0.8rem;color:var(--muted);margin-top:2px}
+
+/* ── NO RESULTS ── */
+.no-results {
+  text-align:center;padding:4rem 2rem;
+  color:var(--muted);
+}
+.no-results .nr-icon{font-size:3rem;margin-bottom:1rem}
+.no-results p{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.05em;margin-bottom:0.5rem}
+.no-results span{font-size:0.875rem}
+
+/* ── FOOTER ── */
+footer {
+  border-top:1px solid var(--border);
+  padding:2rem 1.25rem;
+  text-align:center;
+  color:var(--muted);
+  font-size:0.75rem;
+}
+footer strong{color:var(--gold)}
+
+/* ── RESULT COUNT ── */
+.result-info{font-size:0.8rem;color:var(--muted);margin-bottom:1.25rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .cards-grid{grid-template-columns:1fr}
+  .hero-stats{gap:1rem}
+  .stat-pill{padding:0.6rem 1rem}
+  .knockout-card{flex-wrap:wrap}
+  .ko-time{margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="pitch-bg"></div>
+  <div class="pitch-lines"></div>
+  <div class="center-circle"></div>
+  <div class="center-spot"></div>
+  <div class="halfway-line"></div>
+  <div class="glow-orb"></div>
+
+  <div style="position:relative;z-index:2;text-align:center">
+    <div class="trophy-icon">🏆</div>
+    <div class="hero-eyebrow">48 Teams &nbsp;·&nbsp; 3 Nations &nbsp;·&nbsp; 104 Matches</div>
+    <h1 class="hero-title">
+      FIFA World Cup
+      <span>2026</span>
+    </h1>
+    <p class="hero-subtitle">Complete India Schedule — All times in IST &nbsp;·&nbsp; USA · Canada · Mexico</p>
+
+    <div class="hero-stats">
+      <div class="stat-pill"><div class="num">104</div><div class="lbl">Matches</div></div>
+      <div class="stat-pill"><div class="num">48</div><div class="lbl">Teams</div></div>
+      <div class="stat-pill"><div class="num">16</div><div class="lbl">Host Cities</div></div>
+      <div class="stat-pill"><div class="num">39</div><div class="lbl">Days</div></div>
+    </div>
+
+    <div style="margin-top:2rem;opacity:0;animation:fadeUp 0.8s 1s forwards">
+      <a href="#schedule" style="display:inline-block;background:var(--gold);color:var(--navy);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.1em;padding:0.8rem 2.5rem;border-radius:100px;text-decoration:none;transition:background 0.2s">View Full Schedule ↓</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+
+<!-- MAIN -->
+<main class="main" id="schedule">
+
+  <div class="section-label">IST Match Schedule</div>
+  <h2 class="section-title">All 104 Matches</h2>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-block"><div class="s-num">🌙</div><div class="s-lbl">Most matches: Post-midnight</div></div>
+    <div class="stat-block"><div class="s-num">9:30<span style="font-size:1rem">PM</span></div><div class="s-lbl">Earliest prime-time slot</div></div>
+    <div class="stat-block"><div class="s-num">12:30<span style="font-size:1rem">AM</span></div><div class="s-lbl">Final kick-off (IST)</div></div>
+    <div class="stat-block"><div class="s-num">Jul 21</div><div class="s-lbl">World Cup Final</div></div>
+  </div>
+
+  <!-- Today Banner -->
+  <div class="today-banner" id="today-banner" style="display:none">
+    <div class="tb-icon">⚽</div>
+    <div class="tb-text">
+      <h3>Matches Today</h3>
+      <p id="today-text">Live action happening today — check below</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="Search team…">
+    </div>
+    <select class="time-filter" id="time-filter">
+      <option value="">All times</option>
+      <option value="eve">Evening (9:30–10:30 PM)</option>
+      <option value="late">Late night / Midnight</option>
+      <option value="early">Early morning (5–9:30 AM)</option>
+    </select>
+    <div style="margin-left:auto;font-size:0.8rem;color:var(--muted)" id="count-display"></div>
+  </div>
+
+  <!-- Stage Tabs -->
+  <div class="stage-tabs" id="stage-tabs"></div>
+
+  <!-- Schedule Output -->
+  <div id="schedule-out"></div>
+
+</main>
+
+<footer>
+  <strong>FIFA World Cup 2026</strong> &nbsp;·&nbsp; India (IST) Match Schedule &nbsp;·&nbsp; All times converted to Indian Standard Time (UTC+5:30) &nbsp;·&nbsp; Knockout matchups subject to group-stage results &nbsp;·&nbsp; Data sourced from official FIFA schedule
+</footer>
+
+<script>
+const FLAGS = {
+  "Mexico":"🇲🇽","South Africa":"🇿🇦","South Korea":"🇰🇷","Czechia":"🇨🇿",
+  "Canada":"🇨🇦","Bosnia & Herz.":"🇧🇦","USA":"🇺🇸","Paraguay":"🇵🇾",
+  "Qatar":"🇶🇦","Switzerland":"🇨🇭","Brazil":"🇧🇷","Morocco":"🇲🇦",
+  "Haiti":"🇭🇹","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Australia":"🇦🇺","Türkiye":"🇹🇷",
+  "Germany":"🇩🇪","Curaçao":"🇨🇼","Netherlands":"🇳🇱","Japan":"🇯🇵",
+  "Ivory Coast":"🇨🇮","Ecuador":"🇪🇨","Sweden":"🇸🇪","Tunisia":"🇹🇳",
+  "Spain":"🇪🇸","Cape Verde":"🇨🇻","Belgium":"🇧🇪","Egypt":"🇪🇬",
+  "Saudi Arabia":"🇸🇦","Uruguay":"🇺🇾","Iran":"🇮🇷","New Zealand":"🇳🇿",
+  "France":"🇫🇷","Senegal":"🇸🇳","Iraq":"🇮🇶","Norway":"🇳🇴",
+  "Argentina":"🇦🇷","Algeria":"🇩🇿","Austria":"🇦🇹","Jordan":"🇯🇴",
+  "Portugal":"🇵🇹","DR Congo":"🇨🇩","England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Croatia":"🇭🇷",
+  "Ghana":"🇬🇭","Panama":"🇵🇦","Uzbekistan":"🇺🇿","Colombia":"🇨🇴",
+  "Bosnia & Herzegovina":"🇧🇦","Bosnia & Herz.":"🇧🇦"
+};
+const FLAG = (t)=>FLAGS[t]||"🏳️";
+
+// [date_ist, time_ist, team1, team2, group, stage]
+const MATCHES = [
+  ["Fri, 13 Jun","12:30 AM","Mexico","South Africa","A","Group Stage"],
+  ["Fri, 13 Jun","7:30 AM","South Korea","Czechia","B","Group Stage"],
+  ["Sat, 14 Jun","12:30 AM","Canada","Bosnia & Herz.","C","Group Stage"],
+  ["Sat, 14 Jun","6:30 AM","USA","Paraguay","D","Group Stage"],
+  ["Sun, 15 Jun","12:30 AM","Qatar","Switzerland","C","Group Stage"],
+  ["Sun, 15 Jun","3:30 AM","Brazil","Morocco","E","Group Stage"],
+  ["Sun, 15 Jun","6:30 AM","Haiti","Scotland","E","Group Stage"],
+  ["Sun, 15 Jun","9:30 AM","Australia","Türkiye","D","Group Stage"],
+  ["Sun, 15 Jun","10:30 PM","Germany","Curaçao","F","Group Stage"],
+  ["Mon, 16 Jun","1:30 AM","Netherlands","Japan","G","Group Stage"],
+  ["Mon, 16 Jun","4:30 AM","Ivory Coast","Ecuador","F","Group Stage"],
+  ["Mon, 16 Jun","7:30 AM","Sweden","Tunisia","G","Group Stage"],
+  ["Mon, 16 Jun","9:30 PM","Spain","Cape Verde","H","Group Stage"],
+  ["Tue, 17 Jun","12:30 AM","Belgium","Egypt","I","Group Stage"],
+  ["Tue, 17 Jun","3:30 AM","Saudi Arabia","Uruguay","H","Group Stage"],
+  ["Tue, 17 Jun","6:30 AM","Iran","New Zealand","I","Group Stage"],
+  ["Wed, 18 Jun","12:30 AM","France","Senegal","J","Group Stage"],
+  ["Wed, 18 Jun","3:30 AM","Iraq","Norway","J","Group Stage"],
+  ["Wed, 18 Jun","6:30 AM","Argentina","Algeria","K","Group Stage"],
+  ["Wed, 18 Jun","9:30 AM","Austria","Jordan","K","Group Stage"],
+  ["Wed, 18 Jun","10:30 PM","Portugal","DR Congo","L","Group Stage"],
+  ["Thu, 19 Jun","1:30 AM","England","Croatia","L","Group Stage"],
+  ["Thu, 19 Jun","4:30 AM","Ghana","Panama","L","Group Stage"],
+  ["Thu, 19 Jun","7:30 AM","Uzbekistan","Colombia","A","Group Stage"],
+  ["Thu, 19 Jun","9:30 PM","Czechia","South Africa","B","Group Stage"],
+  ["Fri, 20 Jun","12:30 AM","Switzerland","Bosnia & Herz.","C","Group Stage"],
+  ["Fri, 20 Jun","3:30 AM","Canada","Qatar","C","Group Stage"],
+  ["Fri, 20 Jun","6:30 AM","Mexico","South Korea","A","Group Stage"],
+  ["Sat, 21 Jun","12:30 AM","USA","Australia","D","Group Stage"],
+  ["Sat, 21 Jun","3:30 AM","Scotland","Morocco","E","Group Stage"],
+  ["Sat, 21 Jun","6:00 AM","Brazil","Haiti","E","Group Stage"],
+  ["Sat, 21 Jun","9:30 AM","Türkiye","Paraguay","D","Group Stage"],
+  ["Sat, 21 Jun","10:30 PM","Netherlands","Sweden","G","Group Stage"],
+  ["Sun, 22 Jun","1:30 AM","Germany","Ivory Coast","F","Group Stage"],
+  ["Sun, 22 Jun","5:30 AM","Ecuador","Curaçao","F","Group Stage"],
+  ["Sun, 22 Jun","9:30 AM","Tunisia","Japan","G","Group Stage"],
+  ["Sun, 22 Jun","9:30 PM","Spain","Saudi Arabia","H","Group Stage"],
+  ["Mon, 23 Jun","12:30 AM","Belgium","Iran","I","Group Stage"],
+  ["Mon, 23 Jun","3:30 AM","Uruguay","Cape Verde","H","Group Stage"],
+  ["Mon, 23 Jun","6:30 AM","New Zealand","Egypt","I","Group Stage"],
+  ["Mon, 23 Jun","10:30 PM","Argentina","Austria","K","Group Stage"],
+  ["Tue, 24 Jun","2:30 AM","France","Iraq","J","Group Stage"],
+  ["Tue, 24 Jun","5:30 AM","Norway","Senegal","J","Group Stage"],
+  ["Tue, 24 Jun","8:30 AM","Jordan","Algeria","K","Group Stage"],
+  ["Tue, 24 Jun","10:30 PM","Portugal","Uzbekistan","L","Group Stage"],
+  ["Wed, 25 Jun","1:30 AM","England","Ghana","L","Group Stage"],
+  ["Wed, 25 Jun","4:30 AM","Panama","Croatia","L","Group Stage"],
+  ["Wed, 25 Jun","7:30 AM","Colombia","DR Congo","A","Group Stage"],
+  ["Thu, 26 Jun","12:30 AM","Switzerland","Canada","C","Group Stage"],
+  ["Thu, 26 Jun","12:30 AM","Bosnia & Herz.","Qatar","C","Group Stage"],
+  ["Thu, 26 Jun","3:30 AM","Scotland","Brazil","E","Group Stage"],
+  ["Thu, 26 Jun","3:30 AM","Morocco","Haiti","E","Group Stage"],
+  ["Thu, 26 Jun","6:30 AM","Czechia","Mexico","B","Group Stage"],
+  ["Thu, 26 Jun","6:30 AM","South Africa","South Korea","B","Group Stage"],
+  ["Fri, 27 Jun","1:30 AM","Curaçao","Ivory Coast","F","Group Stage"],
+  ["Fri, 27 Jun","1:30 AM","Ecuador","Germany","F","Group Stage"],
+  ["Fri, 27 Jun","4:30 AM","Japan","Sweden","G","Group Stage"],
+  ["Fri, 27 Jun","4:30 AM","Tunisia","Netherlands","G","Group Stage"],
+  ["Fri, 27 Jun","7:30 AM","Türkiye","USA","D","Group Stage"],
+  ["Fri, 27 Jun","7:30 AM","Paraguay","Australia","D","Group Stage"],
+  ["Sat, 28 Jun","12:30 AM","Norway","France","J","Group Stage"],
+  ["Sat, 28 Jun","12:30 AM","Senegal","Iraq","J","Group Stage"],
+  ["Sat, 28 Jun","5:30 AM","Cape Verde","Saudi Arabia","H","Group Stage"],
+  ["Sat, 28 Jun","5:30 AM","Uruguay","Spain","H","Group Stage"],
+  ["Sat, 28 Jun","8:30 AM","Egypt","Iran","I","Group Stage"],
+  ["Sat, 28 Jun","8:30 AM","New Zealand","Belgium","I","Group Stage"],
+  ["Sun, 29 Jun","2:30 AM","Panama","England","L","Group Stage"],
+  ["Sun, 29 Jun","2:30 AM","Croatia","Ghana","L","Group Stage"],
+  ["Sun, 29 Jun","5:00 AM","Colombia","Portugal","A","Group Stage"],
+  ["Sun, 29 Jun","5:00 AM","DR Congo","Uzbekistan","A","Group Stage"],
+  ["Sun, 29 Jun","7:30 AM","Algeria","Austria","K","Group Stage"],
+  ["Sun, 29 Jun","7:30 AM","Jordan","Argentina","K","Group Stage"],
+];
+
+const KNOCKOUT_STAGES = [
+  {stage:"Round of 32",icon:"⚔️",dates:"29 Jun – 4 Jul",ist:"Late night / Early morning"},
+  {stage:"Round of 16",icon:"🎯",dates:"5 – 9 Jul",ist:"Late night / Early morning"},
+  {stage:"Quarter-finals",icon:"🔥",dates:"10 – 12 Jul",ist:"Late night / Early morning"},
+  {stage:"Semi-finals",icon:"⭐",dates:"15 – 17 Jul",ist:"12:30 AM IST"},
+  {stage:"3rd Place Play-off",icon:"🥉",dates:"20 Jul",ist:"2:30 AM IST"},
+  {stage:"🏆 FINAL",icon:"🏆",dates:"21 Jul — New York/New Jersey",ist:"12:30 AM IST"},
+];
+
+const STAGES = ["All","Group Stage","Knockout Rounds"];
+
+function timeBand(t){
+  if(!t||t==="TBD") return "";
+  const pm=t.includes("PM"),am=t.includes("AM");
+  if(pm) return "eve";
+  const h=parseInt(t);
+  if(am&&h>=5) return "early";
+  return "late";
+}
+function bandLabel(b){
+  if(b==="eve") return "Evening";
+  if(b==="early") return "Early AM";
+  if(b==="late") return "Late Night";
+  return "";
+}
+function bandClass(b){
+  if(b==="eve") return "band-eve";
+  if(b==="early") return "band-early";
+  return "band-late";
+}
+
+// Detect "today" in IST
+function getISTDateStr(){
+  const now = new Date();
+  const ist = new Date(now.toLocaleString("en-US",{timeZone:"Asia/Kolkata"}));
+  const days=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${days[ist.getDay()]}, ${ist.getDate()} ${months[ist.getMonth()]}`;
+}
+
+const todayStr = getISTDateStr();
+
+// Build ticker
+function buildTicker(){
+  const items = MATCHES.slice(0,20).map(m=>
+    `<span class="ticker-item">${FLAG(m[2])} ${m[2]} <span style="color:rgba(10,22,40,0.5)">vs</span> ${m[3]} ${FLAG(m[3])} &nbsp;<span style="font-size:0.8rem;opacity:0.7">${m[1]} IST · ${m[0]}</span></span><span class="ticker-sep"> ⚽ </span>`
+  ).join("");
+  const doubled = items+items;
+  document.getElementById("ticker").innerHTML = doubled;
+}
+
+// Build stage tabs
+function buildTabs(){
+  const c=document.getElementById("stage-tabs");
+  STAGES.forEach(s=>{
+    const b=document.createElement("button");
+    b.className="stage-tab"+(s==="All"?" active":"");
+    b.textContent=s;
+    b.dataset.stage=s;
+    b.onclick=()=>{
+      document.querySelectorAll(".stage-tab").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      render();
+    };
+    c.appendChild(b);
+  });
+}
+
+function getActiveStage(){
+  const el=document.querySelector(".stage-tab.active");
+  return el?el.dataset.stage:"All";
+}
+
+function render(){
+  const q=(document.getElementById("search").value||"").toLowerCase();
+  const tf=document.getElementById("time-filter").value;
+  const stage=getActiveStage();
+
+  const showKnockout = stage==="All"||stage==="Knockout Rounds";
+  const showGroup = stage==="All"||stage==="Group Stage";
+
+  let filtered = MATCHES.filter(m=>{
+    if(!showGroup) return false;
+    const qm=!q||(m[2].toLowerCase().includes(q)||m[3].toLowerCase().includes(q)||m[0].toLowerCase().includes(q));
+    const tb=timeBand(m[1]);
+    const tm=!tf||tb===tf;
+    return qm&&tm;
+  });
+
+  // Group by date
+  const byDate={};
+  filtered.forEach(m=>{
+    if(!byDate[m[0]]) byDate[m[0]]=[];
+    byDate[m[0]].push(m);
+  });
+
+  let html="";
+  let total=filtered.length;
+
+  // Today matches highlight
+  const todayMatches=filtered.filter(m=>m[0]===todayStr);
+  if(todayMatches.length>0){
+    document.getElementById("today-banner").style.display="flex";
+    document.getElementById("today-text").textContent=
+      `${todayMatches.length} match${todayMatches.length>1?"es":""} scheduled today — ${todayMatches.map(m=>m[2]+" vs "+m[3]).join("  ·  ")}`;
+  } else {
+    document.getElementById("today-banner").style.display="none";
+  }
+
+  Object.keys(byDate).forEach(date=>{
+    const isToday=date===todayStr;
+    const matches=byDate[date];
+    html+=`
+    <div class="date-group">
+      <div class="date-header ${isToday?"today-hdr":""}">
+        <span class="date-label">${isToday?"🟢 Today — "+date:date}</span>
+        <span class="day-count">${matches.length} match${matches.length>1?"es":""}</span>
+      </div>
+      <div class="cards-grid">
+        ${matches.map(m=>{
+          const tb=timeBand(m[1]);
+          const timeParts=m[1].replace(/(AM|PM)/," $1").trim().split(" ");
+          const isToday2=date===todayStr;
+          return `
+          <div class="match-card ${isToday2?"today-card":""}">
+            <div class="card-top">
+              <span class="group-badge">Group ${m[4]}</span>
+              <span class="stage-mini">${m[5]}</span>
+            </div>
+            <div class="teams-row">
+              <div class="team">
+                <span class="team-flag">${FLAG(m[2])}</span>
+                <span class="team-name">${m[2]}</span>
+              </div>
+              <div class="vs-block">
+                <div class="vs-dot"></div>
+                <span class="vs-text">VS</span>
+                <div class="vs-dot"></div>
+              </div>
+              <div class="team right">
+                <span class="team-flag">${FLAG(m[3])}</span>
+                <span class="team-name">${m[3]}</span>
+              </div>
+            </div>
+            <div class="card-bottom">
+              <div class="time-display">
+                <span class="time-clock">${timeParts[0]}</span>
+                <span class="time-period">${timeParts[1]||""} IST</span>
+              </div>
+              ${tb?`<span class="time-band ${bandClass(tb)}">${bandLabel(tb)}</span>`:""}
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  });
+
+  // Knockout section
+  if(showKnockout&&!tf&&!q){
+    total+=KNOCKOUT_STAGES.length;
+    html+=`
+    <div style="margin-top:2.5rem">
+      <div class="date-header"><span class="date-label">Knockout Rounds</span><span class="day-count">32 matches TBD</span></div>
+      <div style="margin-top:1rem">
+        ${KNOCKOUT_STAGES.map(k=>`
+        <div class="knockout-card">
+          <div class="ko-icon">${k.icon}</div>
+          <div class="ko-info">
+            <div class="ko-stage">${k.stage}</div>
+            <div class="ko-dates">${k.dates}</div>
+          </div>
+          <div class="ko-time">
+            <div class="ko-ist">${k.ist.split(" ")[0]}</div>
+            <div class="ko-lbl">${k.ist.includes("IST")?k.ist.split(" ").slice(1).join(" "):"Approx. kick-off IST"}</div>
+          </div>
+        </div>`).join("")}
+      </div>
+    </div>`;
+  }
+
+  if(filtered.length===0&&!(showKnockout&&!tf&&!q)){
+    html=`<div class="no-results"><div class="nr-icon">🔍</div><p>No matches found</p><span>Try a different search or filter</span></div>`;
+  }
+
+  document.getElementById("schedule-out").innerHTML=html;
+  document.getElementById("count-display").textContent=`${filtered.length} group-stage match${filtered.length!==1?"es":""}`;
+}
+
+buildTicker();
+buildTabs();
+render();
+
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("time-filter").addEventListener("change",render);
+</script>
+</body>
+</html>
